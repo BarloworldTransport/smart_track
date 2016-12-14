@@ -30,14 +30,13 @@
    <link rel="stylesheet" href="../css/guage.css">
    <link rel="stylesheet" type="text/css" href="../css/pop_style_faults.css">
    <link rel="stylesheet" type="text/css" href="../css/nav_login.css">
- <script src="https://code.jquery.com/jquery-1.12.3.js"></script>
    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
    <link rel="stylesheet" href="https://cdn.datatables.net/1.10.12/css/dataTables.bootstrap.min.css">
    <link rel="stylesheet" href="https://cdn.datatables.net/responsive/2.1.0/css/responsive.dataTables.min.css">
 
     <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
  
- 
+  <script src="https://code.jquery.com/jquery-1.12.3.js"></script>
   <script src="https://cdn.datatables.net/1.10.12/js/jquery.dataTables.min.js"></script>
   <script src="https://cdn.datatables.net/1.10.12/js/dataTables.bootstrap.min.js"></script>
   <script src="https://cdn.datatables.net/responsive/2.1.0/js/dataTables.responsive.min.js"></script>
@@ -176,12 +175,12 @@ filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#f2f6f8', end
 
 <?php
 include '../include/databaselogin.php';
-$sql_count_open=mysqli_query($con,"SELECT COUNT(unit_fault_sr_number) AS open_count 
+$sql_count_open=mysqli_query($con,      "SELECT COUNT(unit_fault_sr_number) AS open_count 
 	FROM unit_faults 
 	WHERE unit_fault_status='Open'");
-$sql_count_scheduled=mysqli_query($con,"SELECT COUNT(unit_fault_sr_number) AS total_count 
-  FROM unit_faults 
-  WHERE unit_fault_status='Scheduled' ");
+$sql_count_scheduled=mysqli_query($con, "SELECT COUNT(unit_fault_sr_number) AS total_count 
+    FROM unit_faults 
+    WHERE unit_fault_status='Scheduled' ");
 $data_count_open=mysqli_fetch_array($sql_count_open);
 $data_count_scheduled=mysqli_fetch_array($sql_count_scheduled);
 $open_faults= $data_count_open['open_count'];
@@ -190,14 +189,12 @@ $open_percentage=ROUND(($open_faults/($scheduled_faults+$open_faults)*100),0);
 $scheduled_percentage=ROUND(($scheduled_faults/($scheduled_faults+$open_faults)*100),0);
 ?>
 <div align="center">
-	  <div class="GaugeMeter" id="opened" data-percent="<?php echo $scheduled_percentage; ?>"   data-append="%" data-size="200" data-theme="DarkBlue-LightBlue" data-back="RGBa(0,0,0,.1)" data-animate_gauge_colors="1" data-animate_text_colors="1" data-width="15" data-label="Opened" data-style="Full" data-label_color="#FFF"></div>
-
-	  <div class="GaugeMeter" id="opened" data-percent="<?php echo $open_percentage; ?>"  data-append="%" data-size="200" data-theme="DarkBlue-LightBlue" data-back="RGBa(0,0,0,.1)" data-animate_gauge_colors="1" data-animate_text_colors="1" data-width="15" data-label="Opened" data-style="Full" data-label_color="#FFF"></div>
-
-	  <div class="GaugeMeter" id="completed" data-percent="10" data-append="%" data-size="200" data-theme="DarkBlue-LightBlue" data-back="RGBa(0,0,0,.1)" data-animate_gauge_colors="1" data-animate_text_colors="1" data-width="15" data-label="Completed" data-style="Full" data-label_color="#FFF"></div>
-	</div>
+	<div class="GaugeMeter" id="scheduled" data-percent="<?php echo $scheduled_percentage; ?>"   data-append="%" data-size="200" data-theme="DarkBlue-LightBlue" data-back="RGBa(0,0,0,.1)" data-animate_gauge_colors="1" data-animate_text_colors="1" data-width="15" data-label="Opened" data-style="Full" data-label_color="#FFF"></div>
+	<div class="GaugeMeter" id="opened" data-percent="<?php echo $open_percentage; ?>"  data-append="%" data-size="200" data-theme="DarkBlue-LightBlue" data-back="RGBa(0,0,0,.1)" data-animate_gauge_colors="1" data-animate_text_colors="1" data-width="15" data-label="Opened" data-style="Full" data-label_color="#FFF"></div>
+	<div class="GaugeMeter" id="completed" data-percent="10" data-append="%" data-size="200" data-theme="DarkBlue-LightBlue" data-back="RGBa(0,0,0,.1)" data-animate_gauge_colors="1" data-animate_text_colors="1" data-width="15" data-label="Completed" data-style="Full" data-label_color="#FFF"></div>
+</div>
 <button class="btn btn-success" data-toggle="modal" data-target="#add_new_record_modal">Add New Record</button>
-   <br>    
+	<br>    
     <br>   
 
 
@@ -220,82 +217,67 @@ $scheduled_percentage=ROUND(($scheduled_faults/($scheduled_faults+$open_faults)*
 		<th>Date Completed</th>
 		<th>Comments</th>
 		<th>Status</th>
-		
-		
 	</tr>
-
 	</thead>
-<tbody>
-
-
-<?php
-$current_date = date("Y-m-d");
-$sql_data=mysqli_query($con,"SELECT * FROM unit_faults");
-	while ($get_data=mysqli_fetch_array($sql_data)) {
-		$days_open=((strtotime($current_date) - strtotime($get_data['unit_fault_date_logged']))/86400);
-		IF ($get_data['unit_fault_status']=='Open')
-			{
-			echo "<tr class='danger'>";
-			}
-				elseif  ($get_data['unit_fault_status']=='Scheduled')
-				{
-				echo "<tr class='warning'>";
-				}
-					Else
-						{
-						echo "<tr class='success'>";
-						}
-							echo " <td><div class='btn-group'>
-           <button class='btn btn-primary btn-sm dropdown-toggle' data-toggle='dropdown' align='center'><i class='fa fa-bars'></i> <span class='glyphicon glyphicon-wrench'></span></button>
-        
-              <ul class='dropdown-menu ' role='menu'>";
-              IF ($get_data['unit_fault_status'] == 'Scheduled')
-              {
+    <tbody>
+    
+    <?php
+    $current_date = date("Y-m-d");
+    $sql_data=mysqli_query($con,"SELECT * FROM unit_faults");
+    	while ($get_data=mysqli_fetch_array($sql_data)) {
+    		$days_open=((strtotime($current_date) - strtotime($get_data['unit_fault_date_logged']))/86400);
+    		IF ($get_data['unit_fault_status']=='Open')
+    		{
+    		echo "<tr class='danger'>";
+    		}
+    		elseif  ($get_data['unit_fault_status']=='Scheduled')
+        	{
+    			echo "<tr class='warning'>";
+    		}
+    		Else
+    		{
+    		  echo "<tr class='success'>";
+    		}
+    		echo " <td><div class='btn-group'>
+            <button class='btn btn-primary btn-sm dropdown-toggle' data-toggle='dropdown' align='center'><i class='fa fa-bars'></i> <span class='glyphicon glyphicon-wrench'></span></button>
+            <ul class='dropdown-menu ' role='menu'>";
+            IF ($get_data['unit_fault_status'] == 'Scheduled')
+            {
                 echo "<li><a href='schedule_window.php?sr_number=".$get_data['unit_fault_sr_number']."' onclick='schedule_pop_up(this.href); return false'> <img src='../images/icons/calender_icon.jpg' width='24px'> Reschedule</a></li>";
-              }
-              Else
-              {
+            }
+            Else
+            {
                 echo "<li><a href='schedule_window.php?sr_number=".$get_data['unit_fault_sr_number']."' onclick='schedule_pop_up(this.href); return false'> <img src='../images/icons/calender_icon.jpg' width='24px'> Schedule</a></li>";
-              }
-
-              	
-                echo " <li><a href='update_fault.php?sr_number=".$get_data['unit_fault_sr_number']."' onclick='update_pop_up(this.href); return false'> <img src='../images/icons/edit_icon.jpg' width='24px'> Edit</a></li>
-                  <li><a href='#'' onClick ='$('#trip_table').tableExport({type:'excel',escape:'false'});'> <img src='../images/icons/delete_icon.jpg' width='24px'> Delete</a></li>  
-           
-              </ul>
-             
+            }
+            echo " <li><a href='update_fault.php?sr_number=".$get_data['unit_fault_sr_number']."' onclick='update_pop_up(this.href); return false'> <img src='../images/icons/edit_icon.jpg' width='24px'> Edit</a></li>
+            <li><a href='#'' onClick ='$('#trip_table').tableExport({type:'excel',escape:'false'});'> <img src='../images/icons/delete_icon.jpg' width='24px'> Delete</a></li>  
+            </ul>
             </div></td>";
-						echo "<td>". $get_data['unit_fault_sr_number']."</td>";
-						echo "<td>". $get_data['unit_fault_fleet_number']."</td>";
-						echo "<td>". $get_data['unit_fault_registration_number']."</td>";
-						echo "<td>". $get_data['unit_fault_fleet']."</td>";
-						echo "<td>". $get_data['unit_fault_unit_type']."</td>";
-						echo "<td>". $get_data['unit_fault_fault_desc']."</td>";
-						echo "<td>". $get_data['unit_fault_date_logged']."</td>";
-					IF ($days_open > 3)
-					{
-						echo "<td style='bgcolor:'red';'><b>". $days_open."</b></td>";
-					}
-					Else
-					{
-						echo "<td>". $days_open."</td>";
-					}
-						echo "<td>". $get_data['unit_fault_date_scheduled']."</td>";
-						echo "<td>". $get_data['unit_fault_date_completed']."</td>";
-						echo "<td>". $get_data['unit_fault_comments']."</td>";
-						echo "<td>". $get_data['unit_fault_status']."</td>";
-
-					
-
-
-			echo "</tr>";
-		}
-		
-	
-	
-?>
-
-</tbody>
+    		echo "<td>". $get_data['unit_fault_sr_number']."</td>";
+    		echo "<td>". $get_data['unit_fault_fleet_number']."</td>";
+    		echo "<td>". $get_data['unit_fault_registration_number']."</td>";
+    		echo "<td>". $get_data['unit_fault_fleet']."</td>";
+    		echo "<td>". $get_data['unit_fault_unit_type']."</td>";
+    		echo "<td>". $get_data['unit_fault_fault_desc']."</td>";
+    		echo "<td>". $get_data['unit_fault_date_logged']."</td>";
+    		IF ($days_open > 3)
+    		{
+    			echo "<td style='bgcolor:'red';'><b>". $days_open."</b></td>";
+    		}
+    		Else
+    		{
+    			echo "<td>". $days_open."</td>";
+    		}
+    		echo "<td>". $get_data['unit_fault_date_scheduled']."</td>";
+    		echo "<td>". $get_data['unit_fault_date_completed']."</td>";
+    		echo "<td>". $get_data['unit_fault_comments']."</td>";
+    		echo "<td>". $get_data['unit_fault_status']."</td>";
+    		echo "</tr>";
+    	}
+    
+    ?>
+    
+    </tbody>
 </table>
 </div>
 

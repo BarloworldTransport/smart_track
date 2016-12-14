@@ -1136,7 +1136,8 @@ _html2canvas.Parse = function (images, options, cb) {
 
     // Adds a class to the pseudo's parent to prevent the original before/after from messing
     // with layouts.
-    // Execute the inserts & addClass() calls in a batch to prevent relayouts.
+			    // Execute the inserts & addClass() calls in a batch to prevent
+				// relayouts.
     function runJobs() {
       // Add Class
       jobs.forEach(function(job){
